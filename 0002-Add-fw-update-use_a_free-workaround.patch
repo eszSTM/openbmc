@@ -1,0 +1,60 @@
+From 76331bd9361775d92f957f445b8ccee770f8ad00 Mon Sep 17 00:00:00 2001
+From: Erwan SZYMANSKI <erwan.szymanski@st.com>
+Date: Thu, 8 Jan 2026 17:05:58 +0100
+Subject: [PATCH 2/2] Add fw update use_a_free workaround
+
+Change-Id: Ifbf7d0faa2de3ddded79252d5cdfc23787572e80
+---
+ ...fter-free-temporary-hugly-workaround.patch | 27 +++++++++++++++++++
+ .../phosphor-software-manager_%.bbappend      |  3 ++-
+ 2 files changed, 29 insertions(+), 1 deletion(-)
+ create mode 100644 meta-st/recipes-phosphor/flash/phosphor-software-manager/0002-Use-after-free-temporary-hugly-workaround.patch
+
+diff --git a/meta-st/recipes-phosphor/flash/phosphor-software-manager/0002-Use-after-free-temporary-hugly-workaround.patch b/meta-st/recipes-phosphor/flash/phosphor-software-manager/0002-Use-after-free-temporary-hugly-workaround.patch
+new file mode 100644
+index 0000000000..7feee39861
+--- /dev/null
++++ b/meta-st/recipes-phosphor/flash/phosphor-software-manager/0002-Use-after-free-temporary-hugly-workaround.patch
+@@ -0,0 +1,27 @@
++From 617798a72f7b745c63f7d788537caff08379cdb0 Mon Sep 17 00:00:00 2001
++From: Erwan SZYMANSKI <erwan.szymanski@st.com>
++Date: Thu, 8 Jan 2026 17:01:05 +0100
++Subject: [PATCH] Use after free temporary hugly workaround
++
++Upstream-Status: Inappropriate [tmp workaround]
++
++---
++ bmc/item_updater.cpp | 2 +-
++ 1 file changed, 1 insertion(+), 1 deletion(-)
++
++diff --git a/bmc/item_updater.cpp b/bmc/item_updater.cpp
++index 8ee940e..b4fa0e4 100644
++--- a/bmc/item_updater.cpp
+++++ b/bmc/item_updater.cpp
++@@ -554,7 +554,7 @@ void ItemUpdater::erase(std::string entryId)
++     auto updateManagerIt = updateManagers.find(entryId);
++     if (updateManagerIt != updateManagers.end())
++     {
++-        updateManagers.erase(entryId);
+++        // updateManagers.erase(entryId);
++     }
++ 
++     return;
++-- 
++2.34.1
++
+diff --git a/meta-st/recipes-phosphor/flash/phosphor-software-manager_%.bbappend b/meta-st/recipes-phosphor/flash/phosphor-software-manager_%.bbappend
+index a46f4f6d3d..19ea5449ee 100644
+--- a/meta-st/recipes-phosphor/flash/phosphor-software-manager_%.bbappend
++++ b/meta-st/recipes-phosphor/flash/phosphor-software-manager_%.bbappend
+@@ -2,4 +2,5 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
+ 
+ SRC_URI += " \
+     file://0001-Do-not-update-U-Boot-SPL.patch \
+-    "
+\ No newline at end of file
++    file://0002-Use-after-free-temporary-hugly-workaround.patch \
++    "
+-- 
+2.34.1
+
